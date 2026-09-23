@@ -1,0 +1,19 @@
+.github/workflows/release.yml
+  s_d48311b2d21061::t_2af721477386bc 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.45-trip",
+  "base_commit_sha": "af883ecc25b932bf95d189ab0578576b473363e0",
+  "prompts": {},
+  "sessions": {
+    "s_d48311b2d21061": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "77f1d9fd-35f4-4934-95cb-4964f29519bb",
+        "model": "Auto"
+      },
+      "human_author": "zhangshuai <zhangs8@trip.com>"
+    }
+  }
+}
