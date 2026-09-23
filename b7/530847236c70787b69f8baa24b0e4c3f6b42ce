@@ -1,0 +1,29 @@
+FileReplaceTool.manifest
+  s_d48311b2d21061::t_b2346c7f09b186 1-19
+FileReplaceTool.cs
+  s_d48311b2d21061::t_b2346c7f09b186 1-618
+ModernMainForm.cs
+  s_d48311b2d21061::t_b2346c7f09b186 1-893
+build.bat
+  s_d48311b2d21061::t_b2346c7f09b186 1-32
+read.md
+  s_d48311b2d21061::t_66605a29ea7b72 1-55
+README.md
+  s_d48311b2d21061::t_7ed7eaa7c6cc70 1-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.45-trip",
+  "base_commit_sha": "b7530847236c70787b69f8baa24b0e4c3f6b42ce",
+  "prompts": {},
+  "sessions": {
+    "s_d48311b2d21061": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "77f1d9fd-35f4-4934-95cb-4964f29519bb",
+        "model": "Auto"
+      },
+      "human_author": "zhangshuai <zhangs8@trip.com>"
+    }
+  }
+}
