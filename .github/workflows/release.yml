@@ -2,8 +2,8 @@ name: Build and Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -23,11 +23,7 @@ jobs:
       - name: Prepare release package
         shell: pwsh
         run: |
-          $tag = "${{ github.ref_name }}"
-          if ([string]::IsNullOrWhiteSpace($tag) -or $tag -eq "main") {
-            $tag = "manual"
-          }
-
+          $tag = "${{ github.run_number }}"
           $dist = "dist"
           New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
@@ -37,7 +33,7 @@ jobs:
             Copy-Item "README.md" -Destination $dist
           }
 
-          $zipName = "FileReplaceTool-$tag.zip"
+          $zipName = "FileReplaceTool-main-$tag.zip"
           Compress-Archive -Path "$dist\*" -DestinationPath $zipName -Force
 
           "ZIP_NAME=$zipName" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -45,14 +41,15 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FileReplaceTool-${{ github.ref_name || 'manual' }}
+          name: FileReplaceTool-main-${{ github.run_number }}
           path: |
             FileReplaceTool-*.zip
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
+          tag_name: main-${{ github.run_number }}
+          name: Build main-${{ github.run_number }}
           files: |
             FileReplaceTool-*.zip
           generate_release_notes: true
