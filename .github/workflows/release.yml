@@ -15,6 +15,30 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate version tag
+        id: version
+        shell: pwsh
+        run: |
+          $commitCount = (git rev-list --count HEAD)
+          $version = "v1.$commitCount.0"
+          "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Create tag automatically
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          $tag = $env:VERSION
+          $exists = git ls-remote --tags origin $tag
+          if ([string]::IsNullOrWhiteSpace($exists)) {
+            git tag $tag
+            git push origin $tag
+          }
 
       - name: Build Windows executable
         shell: cmd
@@ -23,7 +47,6 @@ jobs:
       - name: Prepare release package
         shell: pwsh
         run: |
-          $tag = "${{ github.run_number }}"
           $dist = "dist"
           New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
@@ -33,23 +56,21 @@ jobs:
             Copy-Item "README.md" -Destination $dist
           }
 
-          $zipName = "FileReplaceTool-main-$tag.zip"
+          $zipName = "FileReplaceTool-$env:VERSION.zip"
           Compress-Archive -Path "$dist\*" -DestinationPath $zipName -Force
-
-          "ZIP_NAME=$zipName" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FileReplaceTool-main-${{ github.run_number }}
+          name: FileReplaceTool-${{ env.VERSION }}
           path: |
             FileReplaceTool-*.zip
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: main-${{ github.run_number }}
-          name: Build main-${{ github.run_number }}
+          tag_name: ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
           files: |
             FileReplaceTool-*.zip
           generate_release_notes: true
